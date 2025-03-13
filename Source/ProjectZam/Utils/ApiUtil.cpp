@@ -9,7 +9,7 @@ FAPIUtil::FAPIUtil()
 	MainAPI.MainURL = "http://192.168.10.96:8001";
 }
 
-void FAPIUtil::ParsingData(UStruct Params, FString& Result) const
+void FAPIUtil::ParsingData(UStruct* Params, FString& Result) const
 {
 	FJsonObjectConverter::UStructToJsonObjectString(Params, Result);
 }
