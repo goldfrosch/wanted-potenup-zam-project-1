@@ -30,7 +30,6 @@ void APlayerWall::BeginPlay()
 void APlayerWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	TWeakObjectPtr<APlayerWall> weakThis = this;
 	PoseSampleRequest.Callback = [weakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess) {
 		if (weakThis.IsValid())
@@ -45,7 +44,7 @@ void APlayerWall::Tick(float DeltaTime)
 		}
 	};
 	PoseSampleRequest.Path = "/pose/sample";
-	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
+	FAPIUtil::GetMainAPI()->GetApiV2(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
 
