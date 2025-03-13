@@ -98,6 +98,8 @@ public:
 	FVector UnNormalizePoint(const FVector2D& Point) const;
 	UFUNCTION()
 	bool CheckCollision(const FVector& Point);
+	UFUNCTION()
+	void SetPoseData(const FString& InJsonString);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))

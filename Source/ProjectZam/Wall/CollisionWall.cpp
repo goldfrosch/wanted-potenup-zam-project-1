@@ -4,6 +4,7 @@
 #include "CollisionWall.h"
 
 #include "Components/CollisionDetectComponent.h"
+#include "Interfaces/IHttpResponse.h"
 
 
 // Sets default values
@@ -19,10 +20,32 @@ void ACollisionWall::BeginPlay()
 	Super::BeginPlay();
 
 	TargetLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
-	CollisionDetectComponent->SaveDetectionPoints();
 
-	
+	TWeakObjectPtr<ACollisionWall> WeakThis = this;
+	PoseSampleRequest.Callback = [WeakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess)
+	{
+		if (!IsSuccess)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Pose Sample Request Failed"));
+			return;
+		}
+		
+		const FString JsonString = Res->GetContentAsString();
+		if (WeakThis.IsValid())
+		{
+			ACollisionWall* StrongThis = WeakThis.Get();
+			if (StrongThis)
+			{
+				StrongThis->CollisionDetectComponent->SetPoseData(JsonString);
+				StrongThis->CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
+				StrongThis->CollisionDetectComponent->SaveDetectionPoints();
+				StrongThis->Synchronized = true;
+			}
+		}
+	};
+	PoseSampleRequest.Path = "/pose/sample";
+
+	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
 }
 
 // Called every frame
@@ -30,7 +53,7 @@ void ACollisionWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsMoving)
+	if (bIsMoving && Synchronized)
 	{
 		// 현재 위치
 		FVector CurrentLocation = GetActorLocation();

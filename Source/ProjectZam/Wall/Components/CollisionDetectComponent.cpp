@@ -15,8 +15,6 @@ void UCollisionDetectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	FJsonObjectConverter::JsonObjectStringToUStruct(JsonString, &PoseData, 0, 0);
-	
 	LineLengths.Add(0.0f);
 	LineLengths.Add(0.25f);
 	LineLengths.Add(0.5f);
@@ -151,4 +149,11 @@ bool UCollisionDetectComponent::CheckCollision(const FVector& Point)
 		}
 	}
 	return true;
+}
+
+void UCollisionDetectComponent::SetPoseData(const FString& InJsonString)
+{
+	JsonString = InJsonString;
+
+	FJsonObjectConverter::JsonObjectStringToUStruct(JsonString, &PoseData, 0, 0);
 }

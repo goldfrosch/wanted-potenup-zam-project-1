@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseWall.h"
+#include "ProjectZam/Utils/ApiUtil.h"
 #include "CollisionWall.generated.h"
 
 UCLASS()
@@ -31,4 +32,8 @@ private:
 	FVector TargetLocation = FVector::ZeroVector;
 	FVector StartLocation = FVector::ZeroVector;
 	float Speed;
+
+	FApiRequest PoseSampleRequest;
+	FApiResponse PoseSampleResponse;
+	bool Synchronized = false;
 };
