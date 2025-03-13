@@ -54,7 +54,8 @@ public:
 		return MainAPI;
 	}
 
-	void GetApi(UObject* Caller,const FApiRequest& Request, FApiResponse& Response) const;
+	void GetApi(const FApiRequest& Request, FApiResponse& Response) const;
+	void GetApiV2(UObject* Caller, const FApiRequest& Request, FApiResponse& Response) const;
 	void PostApi(const FApiRequest& Request, FApiResponse& Response) const;
 	
 private:

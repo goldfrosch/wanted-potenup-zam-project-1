@@ -33,6 +33,7 @@ void APlayerWall::Tick(float DeltaTime)
 
 	TWeakObjectPtr<APlayerWall> weakThis = this;
 	PoseSampleRequest.Callback = [weakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess) {
+		UE_LOG(LogTemp, Display, TEXT("하이하이"))
 		if (weakThis.IsValid())
 		{
 			auto* StrongThis = weakThis.Get();
@@ -45,7 +46,7 @@ void APlayerWall::Tick(float DeltaTime)
 		}
 	};
 	PoseSampleRequest.Path = "/pose/sample";
-	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
+	FAPIUtil::GetMainAPI()->GetApiV2(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
 

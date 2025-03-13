@@ -6,7 +6,7 @@
 
 FAPIUtil* FAPIUtil::MainAPI;
 
-void FAPIUtil::GetApi(UObject* Caller, const FApiRequest& Request, FApiResponse& Response) const
+void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response) const
 {
 	if (Response.IsLoading)
 	{
@@ -25,16 +25,47 @@ void FAPIUtil::GetApi(UObject* Caller, const FApiRequest& Request, FApiResponse&
 	
 	Response.IsLoading = true;
 
-	const TWeakObjectPtr<UObject> WeakThis = Caller;
 	HttpRequest->OnProcessRequestComplete().BindLambda(
 		[&](const FHttpRequestPtr& Req,
 			const FHttpResponsePtr& Res, bool bProcessedSuccessfully)
 	{
-		if (WeakThis.Get())
+		Response.IsLoading = false;
+		Request.Callback(Req, Res, bProcessedSuccessfully);
+	});
+	
+	HttpRequest->ProcessRequest();
+}
+
+void FAPIUtil::GetApiV2(UObject* Caller, const FApiRequest& Request, FApiResponse& Response) const
+{
+	if (Response.IsLoading)
+	{
+		return;
+	}
+	
+	const FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
+	HttpRequest->SetURL(FString::Printf(TEXT("%s%s"), *URL, *Request.Path));
+	HttpRequest->SetVerb("GET");
+	HttpRequest->SetHeader(TEXT("Content-type"), TEXT("application/json"));
+
+	for (auto NewHeader : Request.Header)
+	{
+		HttpRequest->SetHeader(NewHeader.Key, NewHeader.Value);
+	}
+	
+	Response.IsLoading = true;
+
+	TWeakObjectPtr<UObject> WeakThis = Caller;
+	HttpRequest->OnProcessRequestComplete().BindLambda(
+		[&](const FHttpRequestPtr& Req,
+			const FHttpResponsePtr& Res, bool bProcessedSuccessfully)
+	{
+		if (!WeakThis.Get())
 		{
-			Response.IsLoading = false;
-			Request.Callback(Req, Res, bProcessedSuccessfully);
+			return;
 		}
+		Response.IsLoading = false;
+		Request.Callback(Req, Res, bProcessedSuccessfully);
 	});
 	
 	HttpRequest->ProcessRequest();
