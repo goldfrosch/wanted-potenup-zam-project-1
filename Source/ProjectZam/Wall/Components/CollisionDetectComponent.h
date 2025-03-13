@@ -65,23 +65,55 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
-
 	// 우선 입력을 저장해야함.
 	FString JsonString;
 
 private:
 	UFUNCTION()
-	void CalculateLines();
+	void SaveBonePositionsByImageCoordinates();
+	UFUNCTION()
+	void SaveDetectionPoints();
+	UFUNCTION()
+	void CalculatePositionByLine(FVector2D Start, FVector2D LineVector);
+	UFUNCTION()
+	void ChangeNormalizedPointsToPoints();
+	UFUNCTION()
+	const FKeypoint& GetKeypoint(int32 KeypointId) const;
+	UFUNCTION()
+	FVector2D NormalizePoint(const FVector2D& Point) const;
+	UFUNCTION()
+	FVector UnNormalizePoint(const FVector2D& Point) const;
 	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
-	float Width = 720.0f;
+	float Width = 640.0f;
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
-	float Height = 1280.0f;
+	float Height = 480.0f;
+
+	// Wall의 크기에 따라 조절되어야 함
+	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	float WallWidth = Width;
+	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	float WallHeight = Height;
+	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	FPoseDataEntry PoseData;
 
-	TArray<FVector2D, FVector2D> Lines;
+	TArray<FVector2D> NormalizedPoints;
+	TArray<FVector> Points;
+
+	TArray<float> LineLengths;
+
+	FVector2D HeadPos;
+	FVector2D LeftShoulderPos;
+	FVector2D RightShoulderPos;
+	FVector2D LeftElbowPos;
+	FVector2D RightElbowPos;
+	FVector2D LeftHandPos;
+	FVector2D RightHandPos;
+	FVector2D LeftHipPos;
+	FVector2D RightHipPos;
+	FVector2D LeftKneePos;
+	FVector2D RightKneePos;
+	FVector2D LeftFootPos;
+	FVector2D RightFootPos;
 };
