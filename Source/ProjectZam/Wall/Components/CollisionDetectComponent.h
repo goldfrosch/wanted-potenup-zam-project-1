@@ -68,7 +68,20 @@ public:
 	// 우선 입력을 저장해야함.
 	FString JsonString;
 
-private:
+	FVector2D HeadPos;
+	FVector2D LeftShoulderPos;
+	FVector2D RightShoulderPos;
+	FVector2D LeftElbowPos;
+	FVector2D RightElbowPos;
+	FVector2D LeftHandPos;
+	FVector2D RightHandPos;
+	FVector2D LeftHipPos;
+	FVector2D RightHipPos;
+	FVector2D LeftKneePos;
+	FVector2D RightKneePos;
+	FVector2D LeftFootPos;
+	FVector2D RightFootPos;
+	
 	UFUNCTION()
 	void SaveBonePositionsByImageCoordinates();
 	UFUNCTION()
@@ -83,7 +96,10 @@ private:
 	FVector2D NormalizePoint(const FVector2D& Point) const;
 	UFUNCTION()
 	FVector UnNormalizePoint(const FVector2D& Point) const;
-	
+	UFUNCTION()
+	bool CheckCollision(const FVector& Point);
+
+private:
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	float Width = 640.0f;
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
@@ -102,18 +118,4 @@ private:
 	TArray<FVector> Points;
 
 	TArray<float> LineLengths;
-
-	FVector2D HeadPos;
-	FVector2D LeftShoulderPos;
-	FVector2D RightShoulderPos;
-	FVector2D LeftElbowPos;
-	FVector2D RightElbowPos;
-	FVector2D LeftHandPos;
-	FVector2D RightHandPos;
-	FVector2D LeftHipPos;
-	FVector2D RightHipPos;
-	FVector2D LeftKneePos;
-	FVector2D RightKneePos;
-	FVector2D LeftFootPos;
-	FVector2D RightFootPos;
 };

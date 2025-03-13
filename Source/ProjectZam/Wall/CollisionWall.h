@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "BaseWall.generated.h"
+#include "BaseWall.h"
+#include "CollisionWall.generated.h"
 
 UCLASS()
-class PROJECTZAM_API ABaseWall : public APawn
+class PROJECTZAM_API ACollisionWall : public ABaseWall
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ABaseWall();
+	ACollisionWall();
 
 protected:
 	// Called when the game starts or when spawned
@@ -22,7 +22,13 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void SetMoveToTarget();
+
+private:
+	void TryCollisionDetect();
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UCollisionDetectComponent* CollisionDetectComponent;
+	bool bIsMoving = false;
+	FVector TargetLocation = FVector::ZeroVector;
+	FVector StartLocation = FVector::ZeroVector;
+	float Speed;
 };

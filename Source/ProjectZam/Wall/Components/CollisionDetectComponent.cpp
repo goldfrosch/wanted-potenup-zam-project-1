@@ -131,7 +131,7 @@ FVector2D UCollisionDetectComponent::NormalizePoint(const FVector2D& Point) cons
 
 FVector UCollisionDetectComponent::UnNormalizePoint(const FVector2D& Point) const
 {
-	FVector Result = FVector(Point.X * WallWidth, Point.Y * WallHeight, 0);
+	FVector Result = FVector(0, Point.X * WallWidth, Point.Y * WallHeight);
 
 	// Point에 실제 위치 값을 넣어준다.
 	Result.X += GetOwner()->GetActorLocation().X;
@@ -139,4 +139,16 @@ FVector UCollisionDetectComponent::UnNormalizePoint(const FVector2D& Point) cons
 	Result.Z += GetOwner()->GetActorLocation().Z;
 	
 	return Result;
+}
+
+bool UCollisionDetectComponent::CheckCollision(const FVector& Point)
+{
+	for (auto& WallPoint : Points)
+	{
+		if (FVector2D::Distance({WallPoint.Y, WallPoint.Z}, {Point.Y, Point.Z}) <= 10.0f)
+		{
+			return false;
+		}
+	}
+	return true;
 }
