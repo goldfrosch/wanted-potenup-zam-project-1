@@ -36,6 +36,7 @@ void ACollisionWall::BeginPlay()
 			ACollisionWall* StrongThis = WeakThis.Get();
 			if (StrongThis)
 			{
+				UE_LOG(LogTemp, Display, TEXT("FEAT: %s"), *JsonString);
 				StrongThis->CollisionDetectComponent->SetPoseData(JsonString);
 				StrongThis->CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
 				StrongThis->CollisionDetectComponent->SaveDetectionPoints();
@@ -52,6 +53,9 @@ void ACollisionWall::BeginPlay()
 void ACollisionWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Test Code
+	CollisionDetectComponent->ChangeNormalizedPointsToPoints();
 
 	if (bIsMoving && Synchronized)
 	{

@@ -24,7 +24,7 @@ void APlayerWall::BeginPlay()
 void APlayerWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	DrawBody();
+	// DrawBody();
 }
 
 void APlayerWall::ConvertAndSaveCoord()

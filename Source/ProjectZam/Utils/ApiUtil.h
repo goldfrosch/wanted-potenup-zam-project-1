@@ -48,7 +48,7 @@ public:
 		if (!MainAPI)
 		{
 			MainAPI = new FAPIUtil();
-			MainAPI->MainURL = "http://192.168.10.96:8001";
+			MainAPI->MainURL = "http://192.168.10.87:8000";
 		}
 
 		return MainAPI;

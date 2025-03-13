@@ -8,6 +8,7 @@ FAPIUtil* FAPIUtil::MainAPI;
 
 void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response) const
 {
+	
 	if (Response.IsLoading)
 	{
 		return;

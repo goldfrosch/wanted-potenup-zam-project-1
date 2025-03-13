@@ -29,30 +29,43 @@ void UCollisionDetectComponent::SaveBonePositionsByImageCoordinates()
 	// 1. 데이터들을 로컬 변수로 복사한다.
 	FKeypoint Head = GetKeypoint(0);
 	HeadPos = FVector2D(Head.X, Head.Y);
+	HeadPos.Y = Height - HeadPos.Y;
 	FKeypoint LeftShoulder = GetKeypoint(5);
 	LeftShoulderPos = FVector2D(LeftShoulder.X, LeftShoulder.Y);
+	LeftShoulderPos.Y = Height - LeftShoulderPos.Y;
 	FKeypoint RightShoulder = GetKeypoint(6);
 	RightShoulderPos = FVector2D(RightShoulder.X, RightShoulder.Y);
+	RightShoulderPos.Y = Height - RightShoulderPos.Y;
 	FKeypoint LeftElbow = GetKeypoint(7);
 	LeftElbowPos = FVector2D(LeftElbow.X, LeftElbow.Y);
+	LeftElbowPos.Y = Height - LeftElbowPos.Y;
 	FKeypoint RightElbow = GetKeypoint(8);
 	RightElbowPos = FVector2D(RightElbow.X, RightElbow.Y);
+	RightElbowPos.Y = Height - RightElbowPos.Y;
 	FKeypoint LeftHand = GetKeypoint(9);
 	LeftHandPos = FVector2D(LeftHand.X, LeftHand.Y);
+	LeftHandPos.Y = Height - LeftHandPos.Y;
 	FKeypoint RightHand = GetKeypoint(10);
 	RightHandPos = FVector2D(RightHand.X, RightHand.Y);
+	RightHandPos.Y = Height - RightHandPos.Y;
 	FKeypoint LeftHip = GetKeypoint(11);
 	LeftHipPos = FVector2D(LeftHip.X, LeftHip.Y);
+	LeftHipPos.Y = Height - LeftHipPos.Y;
 	FKeypoint RightHip = GetKeypoint(12);
 	RightHipPos = FVector2D(RightHip.X, RightHip.Y);
+	RightHipPos.Y = Height - RightHipPos.Y;
 	FKeypoint LeftKnee = GetKeypoint(13);
 	LeftKneePos = FVector2D(LeftKnee.X, LeftKnee.Y);
+	LeftKneePos.Y = Height - LeftKneePos.Y;
 	FKeypoint RightKnee = GetKeypoint(14);
 	RightKneePos = FVector2D(RightKnee.X, RightKnee.Y);
+	RightKneePos.Y = Height - RightKneePos.Y;
 	FKeypoint LeftFoot = GetKeypoint(15);
 	LeftFootPos = FVector2D(LeftFoot.X, LeftFoot.Y);
+	LeftFootPos.Y = Height - LeftFootPos.Y;
 	FKeypoint RightFoot = GetKeypoint(16);
 	RightFootPos = FVector2D(RightFoot.X, RightFoot.Y);
+	RightFootPos.Y = Height - RightFootPos.Y;
 }
 
 void UCollisionDetectComponent::SaveDetectionPoints()
@@ -111,9 +124,15 @@ void UCollisionDetectComponent::CalculatePositionByLine(FVector2D Start, FVector
 void UCollisionDetectComponent::ChangeNormalizedPointsToPoints()
 {
 	// 정규화 된 점을 Wall의 크기로 변환
+	Points.Empty();
 	for (auto& NormalizedPoint : NormalizedPoints)
 	{
 		FVector Point = UnNormalizePoint(NormalizedPoint);
+
+		// Test Code
+		// Debug로 그려보기
+		DrawDebugCircle(GetWorld(), Point, 10.0f, 32, FColor::Red, false, 0.0f, 0, 5.0f);
+		
 		Points.Add(Point);
 	}
 }
