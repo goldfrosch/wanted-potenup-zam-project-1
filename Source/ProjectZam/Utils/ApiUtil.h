@@ -54,7 +54,7 @@ public:
 		return MainAPI;
 	}
 
-	void GetApi(const FApiRequest& Request, FApiResponse& Response) const;
+	void GetApi(const FApiRequest& Request, FApiResponse& Response);
 	void PostApi(const FApiRequest& Request, FApiResponse& Response) const;
 	
 private:

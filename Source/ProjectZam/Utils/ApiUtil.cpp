@@ -6,9 +6,8 @@
 
 FAPIUtil* FAPIUtil::MainAPI;
 
-void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response) const
+void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response)
 {
-	
 	if (Response.IsLoading)
 	{
 		return;
@@ -25,7 +24,7 @@ void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response) const
 	}
 	
 	Response.IsLoading = true;
-	
+
 	HttpRequest->OnProcessRequestComplete().BindLambda(
 		[&](const FHttpRequestPtr& Req,
 			const FHttpResponsePtr& Res, bool bProcessedSuccessfully)

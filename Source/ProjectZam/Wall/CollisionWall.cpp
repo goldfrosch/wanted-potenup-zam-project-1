@@ -30,9 +30,10 @@ void ACollisionWall::BeginPlay()
 			return;
 		}
 		
-		const FString JsonString = Res->GetContentAsString();
 		if (WeakThis.IsValid())
 		{
+			const FString JsonString = Res->GetContentAsString();
+			
 			ACollisionWall* StrongThis = WeakThis.Get();
 			if (StrongThis)
 			{
@@ -47,6 +48,8 @@ void ACollisionWall::BeginPlay()
 	PoseSampleRequest.Path = "/pose/sample";
 
 	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
+
+	SetMoveToTarget();
 }
 
 // Called every frame
@@ -59,27 +62,27 @@ void ACollisionWall::Tick(float DeltaTime)
 
 	if (bIsMoving && Synchronized)
 	{
+		// TODO : 이동 로직 고치기
 		// 현재 위치
 		FVector CurrentLocation = GetActorLocation();
-
+		
 		// 목표 위치까지 남은 거리
-		float DistanceRemaining = TargetLocation.X - StartLocation.X;
-
-		// 2초 내 도착해야 하므로 가속도 계산
-		float Acceleration = DistanceRemaining / 2.0f;
-
-		// 속도 업데이트
-		Speed += Acceleration * DeltaTime;
-
-		// 이동할 위치 계산
-		FVector NewLocation = CurrentLocation;
-		NewLocation.X += Speed * DeltaTime;
-
+		float DistanceRemaining = (TargetLocation - StartLocation).Size(); // 거리 계산
+		
+		// 일정한 속도 계산 (2초 내 도착)
+		float Speed = DistanceRemaining / 1.0f; 
+		
+		// 이동할 방향
+		FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
+		
 		// 이동 실행
+		FVector NewLocation = CurrentLocation + Direction * Speed * DeltaTime;
 		SetActorLocation(NewLocation);
 
+		// FVector NewLocation = GetActorLocation();
+
 		// 목표 위치 도착 여부 확인
-		if (FMath::Abs(NewLocation.X - TargetLocation.X) <= KINDA_SMALL_NUMBER)
+		if (FMath::Abs(NewLocation.X - TargetLocation.X) <= 20.0f)
 		{
 			// 목표 위치에 도착하면 충돌 검사를 시작한다.
 			TryCollisionDetect();
@@ -96,19 +99,19 @@ void ACollisionWall::TryCollisionDetect()
 {
 	UCollisionDetectComponent* InCollisionDetectComponent = Cast<ABaseWall>(GetWorld()->GetFirstPlayerController()->GetPawn())->CollisionDetectComponent;
 	
-	FVector HeadPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->HeadPos);
-	FVector LeftShoulderPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->LeftShoulderPos);
-	FVector RightShoulderPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->RightShoulderPos);
-	FVector LeftElbowPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->LeftElbowPos);
-	FVector RightElbowPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->RightElbowPos);
-	FVector LeftHandPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->LeftHandPos);
-	FVector RightHandPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->RightHandPos);
-	FVector LeftHipPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->LeftHipPos);
-	FVector RightHipPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->RightHipPos);
-	FVector LeftKneePos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->LeftKneePos);
-	FVector RightKneePos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->RightKneePos);
-	FVector LeftFootPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->LeftFootPos);
-	FVector RightFootPos = CollisionDetectComponent->UnNormalizePoint(InCollisionDetectComponent->RightFootPos);
+	FVector HeadPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->HeadPos));
+	FVector LeftShoulderPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftShoulderPos));
+	FVector RightShoulderPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightShoulderPos));
+	FVector LeftElbowPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftElbowPos));
+	FVector RightElbowPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightElbowPos));
+	FVector LeftHandPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftHandPos));
+	FVector RightHandPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightHandPos));
+	FVector LeftHipPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftHipPos));
+	FVector RightHipPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightHipPos));
+	FVector LeftKneePos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftKneePos));
+	FVector RightKneePos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightKneePos));
+	FVector LeftFootPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftFootPos));
+	FVector RightFootPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightFootPos));
 
 	TArray<FVector> Points;
 	
@@ -134,6 +137,10 @@ void ACollisionWall::TryCollisionDetect()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Collision Detected"));
 			break;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Collision Detected"));
 		}
 	}
 }

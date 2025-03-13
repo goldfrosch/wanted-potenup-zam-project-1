@@ -31,7 +31,7 @@ private:
 	bool bIsMoving = false;
 	FVector TargetLocation = FVector::ZeroVector;
 	FVector StartLocation = FVector::ZeroVector;
-	float Speed;
+	// float Speed;
 
 	FApiRequest PoseSampleRequest;
 	FApiResponse PoseSampleResponse;

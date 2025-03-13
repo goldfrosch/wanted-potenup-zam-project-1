@@ -165,6 +165,8 @@ FVector UCollisionDetectComponent::UnNormalizePoint(const FVector2D& Point) cons
 
 bool UCollisionDetectComponent::CheckCollision(const FVector& Point)
 {
+	DrawDebugCircle(GetWorld(), Point, 10.0f, 32, FColor::Green, false, 0.0f, 0, 5.0f);
+	UE_LOG(LogTemp, Warning, TEXT("Point: %s"), *Point.ToString());
 	for (auto& WallPoint : Points)
 	{
 		if (FVector2D::Distance({WallPoint.Y, WallPoint.Z}, {Point.Y, Point.Z}) <= 10.0f)
