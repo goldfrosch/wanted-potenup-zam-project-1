@@ -48,15 +48,15 @@ public:
 		if (!MainAPI)
 		{
 			MainAPI = new FAPIUtil();
-			MainAPI->MainURL = "http://192.168.10.87:8000";
+			MainAPI->URL = "http://192.168.10.87:8000";
 		}
 
 		return MainAPI;
 	}
 
-	void GetApi(const FApiRequest& Request, FApiResponse& Response);
+	void GetApi(UObject* Caller,const FApiRequest& Request, FApiResponse& Response) const;
 	void PostApi(const FApiRequest& Request, FApiResponse& Response) const;
 	
 private:
-	FString MainURL;
+	FString URL;
 };
