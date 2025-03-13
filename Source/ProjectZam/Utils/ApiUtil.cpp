@@ -4,15 +4,7 @@
 #include "JsonObjectConverter.h"
 #include "Interfaces/IHttpRequest.h"
 
-FAPIUtil::FAPIUtil()
-{
-	MainAPI.MainURL = "http://192.168.10.96:8001";
-}
-
-void FAPIUtil::ParsingData(UStruct* Params, FString& Result) const
-{
-	FJsonObjectConverter::UStructToJsonObjectString(Params, Result);
-}
+FAPIUtil* FAPIUtil::MainAPI;
 
 void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response) const
 {
@@ -22,7 +14,7 @@ void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response) const
 	}
 	
 	const FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-	HttpRequest->SetURL(FString::Printf("%ls%ls", *MainURL, *Request.Path));
+	HttpRequest->SetURL(FString::Printf(TEXT("%s%s"), *MainURL, *Request.Path));
 	HttpRequest->SetVerb("GET");
 	HttpRequest->SetHeader(TEXT("Content-type"), TEXT("application/json"));
 
@@ -34,10 +26,11 @@ void FAPIUtil::GetApi(const FApiRequest& Request, FApiResponse& Response) const
 	Response.IsLoading = true;
 	
 	HttpRequest->OnProcessRequestComplete().BindLambda(
-		[&](const FHttpRequestPtr& Req, const FHttpResponsePtr& Res)
+		[&](const FHttpRequestPtr& Req,
+			const FHttpResponsePtr& Res, bool bProcessedSuccessfully)
 	{
 		Response.IsLoading = false;
-		Request.Callback(Req, Res);
+		Request.Callback(Req, Res, bProcessedSuccessfully);
 	});
 	
 	HttpRequest->ProcessRequest();
@@ -51,11 +44,12 @@ void FAPIUtil::PostApi(const FApiRequest& Request, FApiResponse& Response) const
 	}
 	
 	const FHttpRequestRef HttpRequest = FHttpModule::Get().CreateRequest();
-	HttpRequest->SetURL(FString::Printf("%ls%ls", *MainURL, *Request.Path));
+	HttpRequest->SetURL(FString::Printf(TEXT("%s%s"), *MainURL, *Request.Path));
 	HttpRequest->SetVerb("POST");
 	
 	FString ParamsString;
-	ParsingData(Request.Params, ParamsString);
+	FJsonObjectConverter::UStructToJsonObjectString(*Request.Params, ParamsString);
+	HttpRequest->SetContentAsString(ParamsString);
 	
 	HttpRequest->SetHeader(TEXT("Content-type"), TEXT("application/json"));
 
@@ -67,10 +61,11 @@ void FAPIUtil::PostApi(const FApiRequest& Request, FApiResponse& Response) const
 	Response.IsLoading = true;
 	
 	HttpRequest->OnProcessRequestComplete().BindLambda(
-		[&](const FHttpRequestPtr& Req, const FHttpResponsePtr& Res)
+		[&](const FHttpRequestPtr& Req,
+			const FHttpResponsePtr& Res, bool bProcessedSuccessfully)
 	{
 		Response.IsLoading = false;
-		Request.Callback(Req, Res);
+		Request.Callback(Req, Res, bProcessedSuccessfully);
 	});
 
 	HttpRequest->ProcessRequest();

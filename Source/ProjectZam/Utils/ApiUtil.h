@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Interfaces/IHttpRequest.h"
+#include "ApiUtil.generated.h"
 
 USTRUCT()
 struct FApiRequest {
@@ -13,7 +14,7 @@ struct FApiRequest {
 	FString Path;
 	// Callback Function -> API가 성공, 실패 같은 Call이 완료되는 시점에서 실행되는
 	// Lambda 함수를 넣어주면 된다.
-	TFunction<void (FHttpRequestPtr Request, FHttpResponsePtr Response)> Callback;
+	TFunction<void (FHttpRequestPtr Request, FHttpResponsePtr Response, const bool IsSuccess)> Callback;
 	// API Call이 있는 경우에 Post 같은 객체로 전달해야 하는 요청이 있을 시 설정하는 값으로,
 	// Get에서는 어차피 값을 넣어주지 않아도 되니 Get은 무시해도 된다.
 	// (최신 Get 문법으로 진행하지 않을 것이라 Params 안씀)
@@ -40,15 +41,22 @@ class FAPIUtil
 {
 
 public:
-	FAPIUtil();
-	
-	static FAPIUtil MainAPI;
+	static FAPIUtil* MainAPI;
+
+	static FAPIUtil* GetMainAPI()
+	{
+		if (!MainAPI)
+		{
+			MainAPI = new FAPIUtil();
+			MainAPI->MainURL = "http://192.168.10.96:8001";
+		}
+
+		return MainAPI;
+	}
 
 	void GetApi(const FApiRequest& Request, FApiResponse& Response) const;
 	void PostApi(const FApiRequest& Request, FApiResponse& Response) const;
 	
 private:
 	FString MainURL;
-
-	void ParsingData(UStruct* Params, FString& Result) const;
 };
