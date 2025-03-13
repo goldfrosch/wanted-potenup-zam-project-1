@@ -54,6 +54,7 @@ public:
 		return MainAPI;
 	}
 
+	// Deprecated
 	void GetApi(const FApiRequest& Request, FApiResponse& Response) const;
 	void GetApiV2(UObject* Caller, const FApiRequest& Request, FApiResponse& Response) const;
 	void PostApi(const FApiRequest& Request, FApiResponse& Response) const;
