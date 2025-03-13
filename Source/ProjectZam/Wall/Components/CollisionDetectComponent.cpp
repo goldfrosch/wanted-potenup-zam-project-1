@@ -27,6 +27,10 @@ void UCollisionDetectComponent::SaveBonePositionsByImageCoordinates()
 {
 	// PoseData를 바탕으로 인체 구조에 맞게 선을 그리고 충돌을 체크할 점들의 위치를 계산한다.
 	// 1. 데이터들을 로컬 변수로 복사한다.
+	if (PoseData.Pose.IsEmpty())
+	{
+		return;
+	}
 	FKeypoint Head = GetKeypoint(0);
 	HeadPos = FVector2D(Head.X, Head.Y);
 	FKeypoint LeftShoulder = GetKeypoint(5);
