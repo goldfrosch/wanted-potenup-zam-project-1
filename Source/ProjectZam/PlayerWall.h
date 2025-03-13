@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Utils/ApiUtil.h"
 #include "Wall/BaseWall.h"
 #include "PlayerWall.generated.h"
 
@@ -25,6 +26,10 @@ public:
 	void DrawBody();
 
 public:
+
+	FApiRequest PoseSampleRequest;
+	FApiResponse PoseSampleResponse;
+	
 	TArray<FVector2D> normalizedPoints;
 	TArray<FVector> points;
 };
