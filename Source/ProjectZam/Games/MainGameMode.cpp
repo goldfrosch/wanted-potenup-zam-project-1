@@ -15,5 +15,5 @@ void AMainGameMode::BeginPlay()
 	
 	PoseSampleRequest.Path = "/pose/sample";
 
-	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
+	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 }

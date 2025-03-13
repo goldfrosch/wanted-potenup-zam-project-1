@@ -44,7 +44,7 @@ void APlayerWall::Tick(float DeltaTime)
 		}
 	};
 	PoseSampleRequest.Path = "/pose/sample";
-	FAPIUtil::GetMainAPI()->GetApiV2(this, PoseSampleRequest, PoseSampleResponse);
+	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
 
