@@ -1,6 +1,7 @@
 #include "CollisionDetectComponent.h"
 
 #include "JsonObjectConverter.h"
+#include "Evaluation/Blending/MovieSceneBlendType.h"
 
 // Sets default values for this component's properties
 UCollisionDetectComponent::UCollisionDetectComponent()
@@ -156,4 +157,34 @@ void UCollisionDetectComponent::SetPoseData(const FString& InJsonString)
 	JsonString = InJsonString;
 
 	FJsonObjectConverter::JsonObjectStringToUStruct(JsonString, &PoseData, 0, 0);
+}
+
+void UCollisionDetectComponent::DrawDebugHeadCircle(const FVector& Center, const float Radius, const float LineThickness)
+{
+	const float AngleStep = 2.0f * PI / 32;
+	FVector PrevPoint = Center + FVector(0.0f, Radius, 0.0f);
+    
+	for (int32 i = 1; i <= 32; i++)
+	{
+		float Angle = AngleStep * i;
+		FVector NextPoint = Center + FVector(0.0f , FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius);
+        
+		DrawDebugLine(
+			GetWorld(),
+			PrevPoint,
+			NextPoint,
+			FColor::Red,
+			false,
+			-1.0f,
+			0,
+			LineThickness
+		);
+        
+		PrevPoint = NextPoint;
+	}
+}
+
+void UCollisionDetectComponent::DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness)
+{
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1, 0, LineThickness);
 }

@@ -25,4 +25,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UCollisionDetectComponent* CollisionDetectComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float headRadius = 150.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float lineThickness = 10.0f;
 };

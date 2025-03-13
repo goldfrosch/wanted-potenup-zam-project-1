@@ -100,8 +100,12 @@ public:
 	bool CheckCollision(const FVector& Point);
 	UFUNCTION()
 	void SetPoseData(const FString& InJsonString);
-
+	// 디버그 라인 그리기 함수
+	void DrawDebugHeadCircle(const FVector& Center, const float Radius, const float LineThickness);
+	void DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness);
+	
 private:
+	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	float Width = 640.0f;
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
