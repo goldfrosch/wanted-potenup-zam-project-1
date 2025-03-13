@@ -30,10 +30,8 @@ void APlayerWall::BeginPlay()
 void APlayerWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	TWeakObjectPtr<APlayerWall> weakThis = this;
 	PoseSampleRequest.Callback = [weakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess) {
-		UE_LOG(LogTemp, Display, TEXT("하이하이"))
 		if (weakThis.IsValid())
 		{
 			auto* StrongThis = weakThis.Get();

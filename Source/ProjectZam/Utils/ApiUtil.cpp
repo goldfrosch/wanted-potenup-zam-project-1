@@ -57,11 +57,12 @@ void FAPIUtil::GetApiV2(UObject* Caller, const FApiRequest& Request, FApiRespons
 
 	TWeakObjectPtr<UObject> WeakThis = Caller;
 	HttpRequest->OnProcessRequestComplete().BindLambda(
-		[&](const FHttpRequestPtr& Req,
+		[WeakThis, &Request, &Response](const FHttpRequestPtr& Req,
 			const FHttpResponsePtr& Res, bool bProcessedSuccessfully)
 	{
-		if (!WeakThis.Get())
+		if (!WeakThis.IsValid())
 		{
+			UE_LOG(LogTemp, Error, TEXT("Memory Error!"))
 			return;
 		}
 		Response.IsLoading = false;
