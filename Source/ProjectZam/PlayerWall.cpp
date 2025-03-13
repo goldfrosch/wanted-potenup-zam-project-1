@@ -21,8 +21,8 @@ void APlayerWall::BeginPlay()
 
 	for (int32 i = 0 ; i < 13; i++)
 	{
-		normalizedPoints.Add(FVector2d::ZeroVector);
-		points.Add(FVector::ZeroVector);
+		normalizedPoints.Add(FVector2d::Zero());
+		points.Add(FVector::Zero());
 	}
 }
 
@@ -30,22 +30,21 @@ void APlayerWall::BeginPlay()
 void APlayerWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	TWeakObjectPtr<APlayerWall> weakThis = this;
 	PoseSampleRequest.Callback = [weakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess) {
 		if (weakThis.IsValid())
 		{
-			auto* strongThis = weakThis.Get();
-			if (strongThis)
+			auto* StrongThis = weakThis.Get();
+			if (StrongThis)
 			{
 				if (!IsSuccess) return;
 				const FString JsonString = Res->GetContentAsString();
-				strongThis->CollisionDetectComponent->SetPoseData(JsonString);
+				StrongThis->CollisionDetectComponent->SetPoseData(JsonString);
 			}
 		}
 	};
-	PoseSampleRequest.Path = "/pose/mock";
-	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
+	PoseSampleRequest.Path = "/pose/sample";
+	FAPIUtil::GetMainAPI()->GetApiV2(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
 
@@ -83,16 +82,6 @@ void APlayerWall::DrawBody()
 {
 	CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
 	ConvertAndSaveCoord();
-
-	// 카메라에 특정부위가 안나오고 있으면 화면에 그리지 마라
-	for (int32 i = 0; i < points.Num(); i++)
-	{
-		if (points[i] == FVector::ZeroVector)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("특정 부위가 카메라에 잡히지 않고 있습니다!"));
-			return;
-		}
-	}
 
 	// 대가리
 	CollisionDetectComponent->DrawDebugHeadCircle(points[0], headRadius, lineThickness);
