@@ -7,7 +7,7 @@
 #include "BaseWall.generated.h"
 
 UCLASS()
-class PROJECTZAM_API ABaseWall : public AActor
+class PROJECTZAM_API ABaseWall : public APawn
 {
 	GENERATED_BODY()
 
@@ -24,4 +24,10 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float headRadius = 150.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float lineThickness = 10.0f;
 };

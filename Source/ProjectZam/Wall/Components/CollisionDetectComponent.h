@@ -68,7 +68,6 @@ public:
 	// 우선 입력을 저장해야함.
 	FString JsonString;
 
-private:
 	UFUNCTION()
 	void SaveBonePositionsByImageCoordinates();
 	UFUNCTION()
@@ -83,6 +82,12 @@ private:
 	FVector2D NormalizePoint(const FVector2D& Point) const;
 	UFUNCTION()
 	FVector UnNormalizePoint(const FVector2D& Point) const;
+
+	// 디버그 라인 그리기 함수
+	void DrawDebugHeadCircle(const FVector& Center, const float Radius, const float LineThickness);
+	void DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness);
+	
+private:
 	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	float Width = 640.0f;
@@ -103,6 +108,7 @@ private:
 
 	TArray<float> LineLengths;
 
+public:
 	FVector2D HeadPos;
 	FVector2D LeftShoulderPos;
 	FVector2D RightShoulderPos;

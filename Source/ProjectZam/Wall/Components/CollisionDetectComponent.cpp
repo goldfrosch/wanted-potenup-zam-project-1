@@ -1,6 +1,7 @@
 #include "CollisionDetectComponent.h"
 
 #include "JsonObjectConverter.h"
+#include "Evaluation/Blending/MovieSceneBlendType.h"
 
 // Sets default values for this component's properties
 UCollisionDetectComponent::UCollisionDetectComponent()
@@ -131,7 +132,7 @@ FVector2D UCollisionDetectComponent::NormalizePoint(const FVector2D& Point) cons
 
 FVector UCollisionDetectComponent::UnNormalizePoint(const FVector2D& Point) const
 {
-	FVector Result = FVector(Point.X * WallWidth, Point.Y * WallHeight, 0);
+	FVector Result = FVector(0, Point.X * WallWidth, Point.Y * WallHeight);
 
 	// Point에 실제 위치 값을 넣어준다.
 	Result.X += GetOwner()->GetActorLocation().X;
@@ -139,4 +140,34 @@ FVector UCollisionDetectComponent::UnNormalizePoint(const FVector2D& Point) cons
 	Result.Z += GetOwner()->GetActorLocation().Z;
 	
 	return Result;
+}
+
+void UCollisionDetectComponent::DrawDebugHeadCircle(const FVector& Center, const float Radius, const float LineThickness)
+{
+	const float AngleStep = 2.0f * PI / 32;
+	FVector PrevPoint = Center + FVector(0.0f, Radius, 0.0f);
+    
+	for (int32 i = 1; i <= 32; i++)
+	{
+		float Angle = AngleStep * i;
+		FVector NextPoint = Center + FVector(0.0f , FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius);
+        
+		DrawDebugLine(
+			GetWorld(),
+			PrevPoint,
+			NextPoint,
+			FColor::Red,
+			false,
+			-1.0f,
+			0,
+			LineThickness
+		);
+        
+		PrevPoint = NextPoint;
+	}
+}
+
+void UCollisionDetectComponent::DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness)
+{
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1, 0, LineThickness);
 }
