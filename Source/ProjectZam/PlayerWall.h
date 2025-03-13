@@ -32,4 +32,5 @@ public:
 	
 	TArray<FVector2D> normalizedPoints;
 	TArray<FVector> points;
+	TArray<FVector> lastPoints;
 };
