@@ -41,10 +41,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound")
 	class USoundWave* HitSound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
-	int32 score = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
-	TSubclassOf<class UScoreUI> ScoreUIFactory;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
-	class UScoreUI* ScoreUI;
+	UPROPERTY(EditAnywhere, Category = "Score")
+	uint32 Score = 0;
 };
