@@ -27,8 +27,8 @@ void APlayerWall::BeginPlay()
 	
 	for (int32 i = 0 ; i < 13; i++)
 	{
-		normalizedPoints.Add(FVector2d::Zero());
-		points.Add(FVector::Zero());
+		normalizedPoints.Add(FVector2d::ZeroVector);
+		points.Add(FVector::ZeroVector);
 	}
 }
 
@@ -89,6 +89,15 @@ void APlayerWall::DrawBody()
 	CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
 	ConvertAndSaveCoord();
 
+	for (int32 i = 0; i < points.Num(); i++)
+	{
+		if (points[i] == FVector::ZeroVector)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("좌표가 이상합니다!"));
+			return;
+		}
+	}
+	
 	// 대가리
 	CollisionDetectComponent->DrawDebugHeadCircle(points[0], headRadius, lineThickness);
 
@@ -113,6 +122,11 @@ void APlayerWall::DrawBody()
 	// 오른다리
 	CollisionDetectComponent->DrawDebugBodyLine(points[8], points[10], lineThickness);
 	CollisionDetectComponent->DrawDebugBodyLine(points[10], points[12], lineThickness);
+	
+	for (int32 i = 0; i < points.Num(); i++)
+	{
+		DrawDebugCircle(GetWorld(), points[i], 10.0f, 32, FColor::Green, false, 0.0f, 0, 5.0f);
+	}
 }
 
 void APlayerWall::UpdateScore()
