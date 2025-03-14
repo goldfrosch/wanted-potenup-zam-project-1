@@ -176,11 +176,11 @@ bool UCollisionDetectComponent::CheckCollision(const FVector& Point)
 	{
 		if (FVector2D::Distance({WallPoint.Y, WallPoint.Z}, {Point.Y, Point.Z}) <= CollisionRadius)
 		{
-			return true;
+			return false;
 		}
 	}
 	DrawDebugCircle(GetWorld(), Point, 10.0f, 32, FColor::Orange, false, 3.0f, 0, 5.0f);
-	return false;
+	return true;
 }
 
 void UCollisionDetectComponent::SetPoseData(const FString& InJsonString)

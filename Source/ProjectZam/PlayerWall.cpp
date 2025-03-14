@@ -52,7 +52,7 @@ void APlayerWall::Tick(float DeltaTime)
 			}
 		}
 	};
-	PoseSampleRequest.Path = "/pose/mock";
+	PoseSampleRequest.Path = "/pose/live";
 	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
