@@ -22,6 +22,11 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float WidthScale = 0.8f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float HeightScale = 0.9f;
+	
 	void ConvertAndSaveCoord();
 	void DrawBody();
 

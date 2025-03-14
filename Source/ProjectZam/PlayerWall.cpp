@@ -30,6 +30,9 @@ void APlayerWall::BeginPlay()
 		normalizedPoints.Add(FVector2d::ZeroVector);
 		points.Add(FVector::ZeroVector);
 	}
+
+	CollisionDetectComponent->WallWidth *= WidthScale;
+	CollisionDetectComponent->WallHeight *= HeightScale;
 }
 
 // Called every frame
