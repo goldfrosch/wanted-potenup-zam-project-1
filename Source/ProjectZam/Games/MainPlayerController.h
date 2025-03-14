@@ -16,6 +16,9 @@ class PROJECTZAM_API AMainPlayerController : public APlayerController
 public:
 	UPROPERTY()
 	TObjectPtr<UScoreUI> ScoreUI;
+	UPROPERTY()
+	TObjectPtr<UUserWidget> LevelChangerUI;
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,4 +26,6 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Score", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UScoreUI> ScoreUIFactory;
+	UPROPERTY(EditAnywhere, Category = "Score", meta = (AllowPrivateAccess = true))
+	TSubclassOf<UUserWidget> LevelChangerUIFactory;	
 };

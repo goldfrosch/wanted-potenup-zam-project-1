@@ -6,7 +6,7 @@
 #include "CollisionWall.h"
 #include "JsonObjectConverter.h"
 #include "Blueprint/UserWidget.h"
-#include "ProjectZam/PlayerWall.h"
+#include "ProjectZam/Games/MainPlayerController.h"
 
 // Sets default values
 AWallManager::AWallManager()
@@ -67,10 +67,10 @@ void AWallManager::SpawnWalls()
 	}
 	else
 	{
-		auto* player = Cast<APlayerWall>(GetWorld()->GetFirstPlayerController()->GetPawn());
-		if (player)
+		auto* controller = Cast<AMainPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (controller)
 		{
-			player->LevelChangeUI->SetVisibility(ESlateVisibility::Visible);
+			controller->LevelChangerUI->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 }
