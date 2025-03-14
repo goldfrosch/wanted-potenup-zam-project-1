@@ -29,6 +29,14 @@ void APlayerWall::BeginPlay()
 	{
 		ScoreUI->AddToViewport();
 	}
+
+	LevelChangeUI = CreateWidget(GetWorld(), LevelChangeUIFactory);
+	if (LevelChangeUI)
+	{
+		LevelChangeUI->AddToViewport();
+		LevelChangeUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+	
 	
 	for (int32 i = 0 ; i < 13; i++)
 	{

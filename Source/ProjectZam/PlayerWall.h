@@ -47,4 +47,9 @@ public:
 	TSubclassOf<class UScoreUI> ScoreUIFactory;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
 	class UScoreUI* ScoreUI;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
+	TSubclassOf<class UUserWidget> LevelChangeUIFactory;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
+	class UUserWidget* LevelChangeUI;
 };
