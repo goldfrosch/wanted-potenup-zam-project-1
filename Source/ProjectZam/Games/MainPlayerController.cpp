@@ -12,4 +12,11 @@ void AMainPlayerController::BeginPlay()
 		ScoreUI = CreateWidget<UScoreUI>(this, ScoreUIFactory);
 		ScoreUI->AddToViewport();
 	}
+
+	if (LevelChangerUIFactory)
+	{
+		LevelChangerUI = CreateWidget<UUserWidget>(this, LevelChangerUIFactory);
+		LevelChangerUI->AddToViewport();
+		LevelChangerUI->SetVisibility(ESlateVisibility::Hidden);		
+	}
 }
