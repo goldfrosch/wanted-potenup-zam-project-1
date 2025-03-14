@@ -71,6 +71,7 @@ void AWallManager::SpawnWalls()
 		if (controller)
 		{
 			controller->LevelChangerUI->SetVisibility(ESlateVisibility::Visible);
+			controller->SetShowMouseCursor(true);
 		}
 	}
 }

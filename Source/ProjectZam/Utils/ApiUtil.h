@@ -41,7 +41,6 @@ class FAPIUtil
 {
 
 public:
-	static FAPIUtil* MainAPI;
 
 	static FAPIUtil* GetMainAPI()
 	{
@@ -58,5 +57,7 @@ public:
 	void PostApi(UObject* Caller, const FApiRequest& Request, FApiResponse& Response) const;
 	
 private:
+	static FAPIUtil* MainAPI;
+	
 	FString URL;
 };
