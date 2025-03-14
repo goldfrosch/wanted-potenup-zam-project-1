@@ -170,12 +170,18 @@ void ACollisionWall::TryCollisionDetect()
 		}
 	}
 
+	auto* Target = Cast<APlayerWall>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if (bIsDetected == false)
 	{
 		AddScore();
 		bAddedScore = true;
+		Target->SetPlaySound(Target->AddScoreSound);
 	}
-
+	else
+	{
+		Target->SetPlaySound(Target->HitSound);
+	}
+	
 	Destroy();
 }
 

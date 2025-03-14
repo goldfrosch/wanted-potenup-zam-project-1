@@ -5,6 +5,8 @@
 
 #include "CollisionWall.h"
 #include "JsonObjectConverter.h"
+#include "Blueprint/UserWidget.h"
+#include "ProjectZam/Games/MainPlayerController.h"
 
 // Sets default values
 AWallManager::AWallManager()
@@ -62,6 +64,14 @@ void AWallManager::SpawnWalls()
 		Wall->SetMoveToTarget(PoseWrapper.Poses[Indices[Index++]]);
 		CollisionWalls.RemoveAt(0);
 		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AWallManager::SpawnWalls, SpawnRate, false);
+	}
+	else
+	{
+		auto* controller = Cast<AMainPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (controller)
+		{
+			controller->LevelChangerUI->SetVisibility(ESlateVisibility::Visible);
+		}
 	}
 }
 

@@ -5,6 +5,8 @@
 
 #include "ScoreUI.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/AudioComponent.h"
+#include "Games/MainPlayerController.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Wall/Components/CollisionDetectComponent.h"
 
@@ -14,23 +16,19 @@ APlayerWall::APlayerWall()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	SoundInstance = CreateDefaultSubobject<UAudioComponent>(TEXT("SoundInstance"));
 }
 
 // Called when the game starts or when spawned
 void APlayerWall::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ScoreUI = Cast<UScoreUI>(CreateWidget(GetWorld(), ScoreUIFactory));
-	if (ScoreUI)
-	{
-		ScoreUI->AddToViewport();
-	}
 	
 	for (int32 i = 0 ; i < 13; i++)
 	{
-		normalizedPoints.Add(FVector2d::Zero());
-		points.Add(FVector::Zero());
+		normalizedPoints.Add(FVector2d::ZeroVector);
+		points.Add(FVector::ZeroVector);
 	}
 }
 
@@ -91,9 +89,18 @@ void APlayerWall::DrawBody()
 	CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
 	ConvertAndSaveCoord();
 
+	for (int32 i = 0; i < points.Num(); i++)
+	{
+		if (points[i] == FVector::ZeroVector)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("좌표가 이상합니다!"));
+			return;
+		}
+	}
+	
 	// 대가리
 	CollisionDetectComponent->DrawDebugHeadCircle(points[0], headRadius, lineThickness);
-	
+
 	// 몸통
 	CollisionDetectComponent->DrawDebugBodyLine(points[1], points[2], lineThickness);
 	CollisionDetectComponent->DrawDebugBodyLine(points[1], points[7], lineThickness);
@@ -115,7 +122,7 @@ void APlayerWall::DrawBody()
 	// 오른다리
 	CollisionDetectComponent->DrawDebugBodyLine(points[8], points[10], lineThickness);
 	CollisionDetectComponent->DrawDebugBodyLine(points[10], points[12], lineThickness);
-
+	
 	for (int32 i = 0; i < points.Num(); i++)
 	{
 		DrawDebugCircle(GetWorld(), points[i], 10.0f, 32, FColor::Green, false, 0.0f, 0, 5.0f);
@@ -124,7 +131,16 @@ void APlayerWall::DrawBody()
 
 void APlayerWall::UpdateScore()
 {
-	score++;
-	ScoreUI->UpdateScore(score);
+	Score += 1;
+	if (AMainPlayerController* PC = Cast<AMainPlayerController>(GetController()))
+	{
+		PC->ScoreUI->UpdateScore(Score);
+	}
+}
+
+void APlayerWall::SetPlaySound(class USoundWave* sound)
+{
+	SoundInstance->SetSound(sound);
+	SoundInstance->Play();
 }
 
