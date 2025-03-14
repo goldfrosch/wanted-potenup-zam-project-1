@@ -24,7 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void SetMoveToTarget();
-
+	void AddScore();
 private:
 	void TryCollisionDetect();
 	
@@ -36,4 +36,7 @@ private:
 	FApiRequest PoseSampleRequest;
 	FApiResponse PoseSampleResponse;
 	bool Synchronized = false;
+
+	bool bIsDetected = false;
+	bool bAddedScore = false;
 };
