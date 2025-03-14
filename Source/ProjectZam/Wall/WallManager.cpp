@@ -6,6 +6,7 @@
 #include "CollisionWall.h"
 #include "JsonObjectConverter.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CollisionDetectComponent.h"
 #include "ProjectZam/Games/MainPlayerController.h"
 
 // Sets default values
@@ -49,6 +50,15 @@ void AWallManager::BeginPlay()
 		Wall->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 		CollisionWalls.Add(Wall);
 	}
+
+	for (int i = 0; i < WallNum ; ++i)
+	{
+		ACollisionWall* Wall = GetWorld()->SpawnActor<ACollisionWall>(WallClass);
+		Wall->SetActorLocation(FVector(0.0f, 500.0f, 500.0f));
+		Wall->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
+		Wall->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+		ImageWalls.Add(Wall);
+	}
 	
 	// 5. 각 벽들을 생성한 후, 전체 플레이 타임에 벽의 개수를 나눠서 각 벽이 생성되는 시간을 계산한다.
 	SpawnRate = PlayTime / WallNum;
@@ -58,12 +68,25 @@ void AWallManager::BeginPlay()
 	
 void AWallManager::SpawnWalls()
 {
+	if (ImageWall)
+	{
+		ImageWall->Destroy();
+	}
+
 	if (CollisionWalls.IsValidIndex(0))
 	{
 		ACollisionWall* Wall = CollisionWalls[0];
-		Wall->SetMoveToTarget(PoseWrapper.Poses[Indices[Index++]]);
+		Wall->SetMoveToTarget(PoseWrapper.Poses[Indices[Index]]);
 		CollisionWalls.RemoveAt(0);
+
+		ImageWall = ImageWalls[0];
+		ImageWall->SetMoveToTarget(PoseWrapper.Poses[Indices[Index]]);
+		ImageWall->UnSetMove();
+		ImageWall->CollisionDetectComponent->CollisionRadius = 10.0f;
+		ImageWalls.RemoveAt(0);
+		
 		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AWallManager::SpawnWalls, SpawnRate, false);
+		Index++;
 	}
 	else
 	{

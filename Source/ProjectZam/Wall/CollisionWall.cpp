@@ -111,6 +111,12 @@ void ACollisionWall::SetMoveToTarget(FPoseDataEntry& PoseData)
 	Synchronized = true;
 }
 
+void ACollisionWall::UnSetMove()
+{
+	bIsMoving = false;
+	Synchronized = false;
+}
+
 void ACollisionWall::AddScore()
 {
 	if (bAddedScore) return;

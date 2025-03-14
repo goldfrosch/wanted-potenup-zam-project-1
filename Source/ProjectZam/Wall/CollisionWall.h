@@ -25,6 +25,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void SetMoveToTarget(FPoseDataEntry& PoseData);
+	void UnSetMove();
 	void AddScore();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))

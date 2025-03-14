@@ -71,6 +71,9 @@ public:
 	float WallWidth = Width;
 	UPROPERTY(EditAnywhere, Category = "Pose")
 	float WallHeight = Height;
+	
+	UPROPERTY(EditAnywhere, Category = "Pose")
+	float CollisionRadius = 50.0f;
 private:
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	FPoseDataEntry PoseData;
@@ -82,6 +85,4 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	TArray<float> LineLengths;
-	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
-	float CollisionRadius = 50.0f;
 };

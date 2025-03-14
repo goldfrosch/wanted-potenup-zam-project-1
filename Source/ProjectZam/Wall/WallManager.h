@@ -26,7 +26,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY()
+	class ACollisionWall* ImageWall;
+
+	UPROPERTY()
 	TArray<class ACollisionWall*> CollisionWalls;
+	UPROPERTY()
+	TArray<class ACollisionWall*> ImageWalls;
 
 	UPROPERTY()
 	FPoseWrapper PoseWrapper;
