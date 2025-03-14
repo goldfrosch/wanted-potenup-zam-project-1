@@ -4,52 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "ProjectZam/JsonExportStruct.h"
 #include "CollisionDetectComponent.generated.h"
-
-USTRUCT(BlueprintType)
-struct FKeypoint
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	int32 Id;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	float X;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	float Y;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	float Confidence;
-};
-
-USTRUCT(BlueprintType)
-struct FPersonPose
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	int32 PersonId;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	TArray<FKeypoint> Keypoints;
-};
-
-USTRUCT(BlueprintType)
-struct FPoseDataEntry
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	FString Status;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	TArray<FPersonPose> Pose;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Pose")
-	FString Timestamp;
-};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTZAM_API UCollisionDetectComponent : public USceneComponent
@@ -103,7 +59,8 @@ public:
 	// 디버그 라인 그리기 함수
 	void DrawDebugHeadCircle(const FVector& Center, const float Radius, const float LineThickness);
 	void DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness);
-	
+	void SetPoseDataHard(const FPoseDataEntry& InPoseData);
+
 private:
 	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
@@ -129,5 +86,5 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	TArray<float> LineLengths;
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
-	float CollisionRadius = 10.0f;
+	float CollisionRadius = 5.0f;
 };

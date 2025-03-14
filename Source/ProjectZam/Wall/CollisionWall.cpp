@@ -23,35 +23,33 @@ void ACollisionWall::BeginPlay()
 	TargetLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 
 	TWeakObjectPtr<ACollisionWall> WeakThis = this;
-	PoseSampleRequest.Callback = [WeakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess)
-	{
-		if (!IsSuccess)
-		{
-			UE_LOG(LogTemp, Error, TEXT("Pose Sample Request Failed"));
-			return;
-		}
-		
-		if (WeakThis.IsValid())
-		{
-			const FString JsonString = Res->GetContentAsString();
-			
-			ACollisionWall* StrongThis = WeakThis.Get();
-			if (StrongThis)
-			{
-				UE_LOG(LogTemp, Display, TEXT("FEAT: %s"), *JsonString);
-				StrongThis->CollisionDetectComponent->SetPoseData(JsonString);
-				StrongThis->CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
-				StrongThis->CollisionDetectComponent->SaveDetectionPoints();
-				StrongThis->Synchronized = true;
-				// TEST CODE
-				StrongThis->SetMoveToTarget();
-			}
-		}
-	};
-	PoseSampleRequest.Path = "/pose/sample";
-
-	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
-
+	// PoseSampleRequest.Callback = [WeakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess)
+	// {
+	// 	if (!IsSuccess)
+	// 	{
+	// 		UE_LOG(LogTemp, Error, TEXT("Pose Sample Request Failed"));
+	// 		return;
+	// 	}
+	// 	
+	// 	if (WeakThis.IsValid())
+	// 	{
+	// 		const FString JsonString = Res->GetContentAsString();
+	// 		
+	// 		ACollisionWall* StrongThis = WeakThis.Get();
+	// 		if (StrongThis)
+	// 		{
+	// 			UE_LOG(LogTemp, Display, TEXT("FEAT: %s"), *JsonString);
+	// 			StrongThis->CollisionDetectComponent->SetPoseData(JsonString);
+	// 			StrongThis->CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
+	// 			StrongThis->CollisionDetectComponent->SaveDetectionPoints();
+	// 			StrongThis->Synchronized = true;
+	// 			// TEST CODE
+	// 			StrongThis->SetMoveToTarget();
+	// 		}
+	// 	}
+	// };
+	// PoseSampleRequest.Path = "/pose/sample";
+	// FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 
 	// 목표 지점까지의 거리
 	const float Distance = FVector::Distance(TargetLocation, StartLocation);
@@ -112,14 +110,30 @@ void ACollisionWall::Tick(float DeltaTime)
 	}
 }
 
-void ACollisionWall::SetMoveToTarget()
+void ACollisionWall::SetMoveToTarget(FPoseDataEntry& PoseData)
 {
+	for (int32 i = 0; i < PoseData.Pose.Num(); ++i)
+	{
+		// Log
+		UE_LOG(LogTemp, Warning, TEXT("PoseData[%d] PersonId: %d"), i, PoseData.Pose[i].PersonId);
+		for (int32 j = 0; j < PoseData.Pose[i].Keypoints.Num(); ++j)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PoseData[%d] Keypoint[%d] Id: %d"), i, j, PoseData.Pose[i].Keypoints[j].Id);
+			UE_LOG(LogTemp, Warning, TEXT("PoseData[%d] Keypoint[%d] X: %f"), i, j, PoseData.Pose[i].Keypoints[j].X);
+			UE_LOG(LogTemp, Warning, TEXT("PoseData[%d] Keypoint[%d] Y: %f"), i, j, PoseData.Pose[i].Keypoints[j].Y);
+			UE_LOG(LogTemp, Warning, TEXT("PoseData[%d] Keypoint[%d] Confidence: %f"), i, j, PoseData.Pose[i].Keypoints[j].Confidence);
+		}
+	}
+	CollisionDetectComponent->SetPoseDataHard(PoseData);
+	CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
+	CollisionDetectComponent->SaveDetectionPoints();
 	// 이동 시작할 때, 현재 시간과 위치를 저장
 	StartTime = GetWorld()->GetTimeSeconds();
 	StartLocation = GetActorLocation();
     
 	// 이제부터 Tick에서 이동 로직을 수행하게끔 플래그 on
 	bIsMoving = true;
+	Synchronized = true;
 }
 
 void ACollisionWall::AddScore()

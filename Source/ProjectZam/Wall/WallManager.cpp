@@ -4,6 +4,7 @@
 #include "WallManager.h"
 
 #include "CollisionWall.h"
+#include "JsonObjectConverter.h"
 
 // Sets default values
 AWallManager::AWallManager()
@@ -18,19 +19,39 @@ void AWallManager::BeginPlay()
 	Super::BeginPlay();
 
 	// 1. 정답 파일을 읽어온다.
-	FString AnswerPath = FPaths::ProjectContentDir() + "Answer.txt";
+	FString AnswerPath = FPaths::ProjectContentDir() + "Answer.json";
+	UE_LOG(LogTemp, Warning, TEXT("AnswerPath: %s"), *AnswerPath);
 	FString AnswerStringJson;
 	FFileHelper::LoadFileToString(AnswerStringJson, *AnswerPath);
 	
 	// 2. Json을 파싱한다.
+	FJsonObjectConverter::JsonObjectStringToUStruct(AnswerStringJson, &PoseWrapper, 0, 0);
 	
+	// 4. 정답 파일을 기반으로 벽의 index를 계산한다.
+	UE_LOG(LogTemp, Warning, TEXT("PoseWrapper Pose Num: %d"), PoseWrapper.Poses.Num());
+
+	for (int i = 0; i < WallNum; ++i) {
+		int index = std::round(i * (PoseWrapper.Poses.Num() - 1) / (WallNum - 1));  // 균일 간격 계산
+		Indices.push_back(index);
+	}
+
+	for (int i = 0; i < Indices.size(); ++i) {
+		UE_LOG(LogTemp, Warning, TEXT("Indices[%d]: %d"), i, Indices[i]);
+	}
+		
+	// 4. 각 벽들을 생성한다.
+	for (int i = 0; i < WallNum; ++i) {
+		ACollisionWall* Wall = GetWorld()->SpawnActor<ACollisionWall>(ACollisionWall::StaticClass());
+		Wall->SetActorLocation(FVector(13080.0f, 0.0f, 440.0f));
+		Wall->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
+		Wall->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+		CollisionWalls.Add(Wall);
+	}
 	
-	// 3. 정답 파일을 기반으로 각 벽들을 생성한다.
-	
-	
-	// 4. 각 벽들을 생성한 후, 전체 플레이 타임에 벽의 개수를 나눠서 각 벽이 생성되는 시간을 계산한다.
-	SpawnRate = PlayTime / CollisionWalls.Num();
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AWallManager::SpawnWalls, SpawnRate, false, 0.0f);
+	// 5. 각 벽들을 생성한 후, 전체 플레이 타임에 벽의 개수를 나눠서 각 벽이 생성되는 시간을 계산한다.
+	SpawnRate = PlayTime / WallNum;
+	UE_LOG(LogTemp, Warning, TEXT("SpawnRate: %f"), SpawnRate);
+	SpawnWalls();
 }
 
 void AWallManager::SpawnWalls()
@@ -38,8 +59,9 @@ void AWallManager::SpawnWalls()
 	if (CollisionWalls.IsValidIndex(0))
 	{
 		ACollisionWall* Wall = CollisionWalls[0];
-		Wall->SetMoveToTarget();
+		Wall->SetMoveToTarget(PoseWrapper.Poses[Indices[Index++]]);
 		CollisionWalls.RemoveAt(0);
+		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AWallManager::SpawnWalls, SpawnRate, false);
 	}
 }
 
