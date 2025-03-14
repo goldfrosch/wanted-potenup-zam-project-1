@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProjectZam/JsonExportStruct.h"
 #include "WallManager.generated.h"
 
 UCLASS()
@@ -28,9 +29,17 @@ public:
 	TArray<class ACollisionWall*> CollisionWalls;
 
 	UPROPERTY()
+	FPoseWrapper PoseWrapper;
+	UPROPERTY()
 	FTimerHandle SpawnTimerHandle;
 	UPROPERTY()
 	float SpawnRate = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
-	float PlayTime = 0.0f;
+	float PlayTime = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
+	int32 WallNum = 10.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
+	int32 Index = 0;
+
+	std::vector<int32> Indices;
 };

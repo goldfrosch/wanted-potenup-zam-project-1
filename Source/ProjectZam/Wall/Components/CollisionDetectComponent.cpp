@@ -131,7 +131,7 @@ void UCollisionDetectComponent::ChangeNormalizedPointsToPoints()
 
 		// Test Code
 		// Debug로 그려보기
-		DrawDebugCircle(GetWorld(), Point, 10.0f, 32, FColor::Red, false, 0.0f, 0, 5.0f);
+		DrawDebugCircle(GetWorld(), Point, CollisionRadius, 32, FColor::Red, false, 0.0f, 0, 5.0f);
 		
 		Points.Add(Point);
 	}
@@ -225,4 +225,21 @@ void UCollisionDetectComponent::DrawDebugHeadCircle(const FVector& Center, const
 void UCollisionDetectComponent::DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness)
 {
 	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1, 0, LineThickness);
+}
+
+void UCollisionDetectComponent::SetPoseDataHard(const FPoseDataEntry& InPoseData)
+{
+	PoseData = InPoseData;
+
+	for (auto& Pose : PoseData.Pose[0].Keypoints)
+	{
+		if (!PoseMap.Contains(Pose.Id))
+		{
+			PoseMap.Add(Pose.Id, Pose);
+		}
+		else
+		{
+			PoseMap[Pose.Id] = Pose;
+		}
+	}
 }
