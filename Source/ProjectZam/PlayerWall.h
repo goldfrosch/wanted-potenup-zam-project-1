@@ -25,11 +25,19 @@ public:
 	void ConvertAndSaveCoord();
 	void DrawBody();
 
+	void UpdateScore();
 public:
-
 	FApiRequest PoseSampleRequest;
 	FApiResponse PoseSampleResponse;
 	
 	TArray<FVector2D> normalizedPoints;
 	TArray<FVector> points;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
+	int32 score = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
+	TSubclassOf<class UScoreUI> ScoreUIFactory;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
+	class UScoreUI* ScoreUI;
 };
