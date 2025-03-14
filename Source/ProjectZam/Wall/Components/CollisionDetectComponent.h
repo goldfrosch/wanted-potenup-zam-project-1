@@ -91,7 +91,7 @@ public:
 	UFUNCTION()
 	void ChangeNormalizedPointsToPoints();
 	UFUNCTION()
-	const FKeypoint& GetKeypoint(int32 KeypointId) const;
+	const FKeypoint& GetKeypoint(int32 KeypointId);
 	UFUNCTION()
 	FVector2D NormalizePoint(const FVector2D& Point) const;
 	UFUNCTION()
@@ -119,9 +119,15 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	FPoseDataEntry PoseData;
+	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	TMap<int32, FKeypoint> PoseMap;
 
 	TArray<FVector2D> NormalizedPoints;
 	TArray<FVector> Points;
 
+	
+	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	TArray<float> LineLengths;
+	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	float CollisionRadius = 10.0f;
 };

@@ -26,6 +26,9 @@ public:
 	void SetMoveToTarget();
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float MovementDuration = 3.0f;
+	
 	void TryCollisionDetect();
 	
 	bool bIsMoving = false;
@@ -36,4 +39,6 @@ private:
 	FApiRequest PoseSampleRequest;
 	FApiResponse PoseSampleResponse;
 	bool Synchronized = false;
+	float Speed = 0.0f;
+	float StartTime = 0.0f; 
 };

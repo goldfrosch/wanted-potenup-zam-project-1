@@ -27,10 +27,6 @@ void UCollisionDetectComponent::SaveBonePositionsByImageCoordinates()
 {
 	// PoseData를 바탕으로 인체 구조에 맞게 선을 그리고 충돌을 체크할 점들의 위치를 계산한다.
 	// 1. 데이터들을 로컬 변수로 복사한다.
-	if (PoseData.Pose.IsEmpty())
-	{
-		return;
-	}
 	FKeypoint Head = GetKeypoint(0);
 	HeadPos = FVector2D(Head.X, Head.Y);
 	HeadPos.Y = Height - HeadPos.Y;
@@ -141,9 +137,15 @@ void UCollisionDetectComponent::ChangeNormalizedPointsToPoints()
 	}
 }
 
-const FKeypoint& UCollisionDetectComponent::GetKeypoint(int32 KeypointId) const
+const FKeypoint& UCollisionDetectComponent::GetKeypoint(int32 KeypointId)
 {
-	return PoseData.Pose[0].Keypoints[KeypointId];
+	if (!PoseMap.Contains(KeypointId))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("KeypointId %d is not found in PoseMap"), KeypointId);
+		PoseMap.Add(KeypointId, FKeypoint());
+		return PoseMap[KeypointId];
+	}
+	return PoseMap[KeypointId];
 }
 
 FVector2D UCollisionDetectComponent::NormalizePoint(const FVector2D& Point) const
@@ -166,10 +168,9 @@ FVector UCollisionDetectComponent::UnNormalizePoint(const FVector2D& Point) cons
 bool UCollisionDetectComponent::CheckCollision(const FVector& Point)
 {
 	DrawDebugCircle(GetWorld(), Point, 10.0f, 32, FColor::Green, false, 0.0f, 0, 5.0f);
-	UE_LOG(LogTemp, Warning, TEXT("Point: %s"), *Point.ToString());
 	for (auto& WallPoint : Points)
 	{
-		if (FVector2D::Distance({WallPoint.Y, WallPoint.Z}, {Point.Y, Point.Z}) <= 10.0f)
+		if (FVector2D::Distance({WallPoint.Y, WallPoint.Z}, {Point.Y, Point.Z}) <= CollisionRadius)
 		{
 			return false;
 		}
@@ -182,6 +183,18 @@ void UCollisionDetectComponent::SetPoseData(const FString& InJsonString)
 	JsonString = InJsonString;
 
 	FJsonObjectConverter::JsonObjectStringToUStruct(JsonString, &PoseData, 0, 0);
+
+	for (auto& Pose : PoseData.Pose[0].Keypoints)
+	{
+		if (!PoseMap.Contains(Pose.Id))
+		{
+			PoseMap.Add(Pose.Id, Pose);
+		}
+		else
+		{
+			PoseMap[Pose.Id] = Pose;
+		}
+	}
 }
 
 void UCollisionDetectComponent::DrawDebugHeadCircle(const FVector& Center, const float Radius, const float LineThickness)

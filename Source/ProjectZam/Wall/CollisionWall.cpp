@@ -42,6 +42,8 @@ void ACollisionWall::BeginPlay()
 				StrongThis->CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
 				StrongThis->CollisionDetectComponent->SaveDetectionPoints();
 				StrongThis->Synchronized = true;
+				// TEST CODE
+				StrongThis->SetMoveToTarget();
 			}
 		}
 	};
@@ -49,7 +51,20 @@ void ACollisionWall::BeginPlay()
 
 	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
 
-	SetMoveToTarget();
+
+	// 목표 지점까지의 거리
+	const float Distance = FVector::Distance(TargetLocation, StartLocation);
+
+	// 이동 속도 (유닛/초)
+	// MovementDuration이 0이 되지 않도록 주의하거나 체크 로직을 넣어주세요.
+	if (MovementDuration > 0.0f)
+	{
+		Speed = Distance / MovementDuration;
+	}
+	else
+	{
+		Speed = 0.0f;
+	}
 }
 
 // Called every frame
@@ -57,41 +72,52 @@ void ACollisionWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Test Code
+	// (예시) 평소 충돌 포인트 변환 로직
 	CollisionDetectComponent->ChangeNormalizedPointsToPoints();
 
+	// bIsMoving이면 매 프레임 이동
 	if (bIsMoving && Synchronized)
 	{
-		// TODO : 이동 로직 고치기
-		// 현재 위치
-		FVector CurrentLocation = GetActorLocation();
-		
-		// 목표 위치까지 남은 거리
-		float DistanceRemaining = (TargetLocation - StartLocation).Size(); // 거리 계산
-		
-		// 일정한 속도 계산 (2초 내 도착)
-		float Speed = DistanceRemaining / 1.0f; 
-		
-		// 이동할 방향
-		FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
-		
-		// 이동 실행
-		FVector NewLocation = CurrentLocation + Direction * Speed * DeltaTime;
-		SetActorLocation(NewLocation);
+		// 1) 현재까지 경과된 시간
+		const float CurrentTime = GetWorld()->GetTimeSeconds();
+		const float ElapsedTime = CurrentTime - StartTime;
 
-		// FVector NewLocation = GetActorLocation();
-
-		// 목표 위치 도착 여부 확인
-		if (FMath::Abs(NewLocation.X - TargetLocation.X) <= 20.0f)
+		// 2) 0~1 사이의 보간 비율 alpha = 경과시간 / 전체이동시간
+		float Alpha = 0.0f;
+		if (MovementDuration > 0.f)
 		{
-			// 목표 위치에 도착하면 충돌 검사를 시작한다.
+			Alpha = ElapsedTime / MovementDuration;
+		}
+
+		// 3) 만약 Alpha가 1.0 이상이면 "완료 시점"이라는 의미
+		if (Alpha >= 1.0f)
+		{
+			// 정확히 타깃 위치로 이동 (스냅)
+			SetActorLocation(TargetLocation);
+            
+			// 이동 완료 처리
+			bIsMoving = false;
+            
+			// 목표 위치 도착 시 충돌 검사
 			TryCollisionDetect();
+		}
+		else
+		{
+			// 4) 아직 완료 시간이 되지 않았다면, 
+			//    StartLocation ~ TargetLocation를 Alpha 비율만큼 선형보간
+			FVector NewLocation = FMath::Lerp(StartLocation, TargetLocation, Alpha);
+			SetActorLocation(NewLocation);
 		}
 	}
 }
 
 void ACollisionWall::SetMoveToTarget()
 {
+	// 이동 시작할 때, 현재 시간과 위치를 저장
+	StartTime = GetWorld()->GetTimeSeconds();
+	StartLocation = GetActorLocation();
+    
+	// 이제부터 Tick에서 이동 로직을 수행하게끔 플래그 on
 	bIsMoving = true;
 }
 
