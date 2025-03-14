@@ -42,7 +42,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
 	float PlayTime = 173.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
-	int32 WallNum = 20.0f;
+	int32 WallNum = 19.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
 	int32 Index = 0;
 
