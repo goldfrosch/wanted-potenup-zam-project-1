@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseWall.h"
+#include "ProjectZam/JsonExportStruct.h"
 #include "ProjectZam/Utils/ApiUtil.h"
 #include "CollisionWall.generated.h"
 
@@ -23,7 +24,7 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void SetMoveToTarget();
+	void SetMoveToTarget(FPoseDataEntry& PoseData);
 	void AddScore();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
