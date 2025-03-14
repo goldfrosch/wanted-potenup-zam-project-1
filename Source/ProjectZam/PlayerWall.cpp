@@ -5,6 +5,7 @@
 
 #include "ScoreUI.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/AudioComponent.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Wall/Components/CollisionDetectComponent.h"
 
@@ -14,6 +15,8 @@ APlayerWall::APlayerWall()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	SoundInstance = CreateDefaultSubobject<UAudioComponent>(TEXT("SoundInstance"));
 }
 
 // Called when the game starts or when spawned
@@ -51,7 +54,7 @@ void APlayerWall::Tick(float DeltaTime)
 			}
 		}
 	};
-	PoseSampleRequest.Path = "/pose/sample";
+	PoseSampleRequest.Path = "/pose/mock";
 	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
@@ -121,5 +124,11 @@ void APlayerWall::UpdateScore()
 {
 	score++;
 	ScoreUI->UpdateScore(score);
+}
+
+void APlayerWall::SetPlaySound(class USoundWave* sound)
+{
+	SoundInstance->SetSound(sound);
+	SoundInstance->Play();
 }
 
