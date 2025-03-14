@@ -51,7 +51,7 @@ void APlayerWall::Tick(float DeltaTime)
 			}
 		}
 	};
-	PoseSampleRequest.Path = "/pose/sample";
+	PoseSampleRequest.Path = "/pose/mock";
 	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
@@ -93,7 +93,7 @@ void APlayerWall::DrawBody()
 
 	// 대가리
 	CollisionDetectComponent->DrawDebugHeadCircle(points[0], headRadius, lineThickness);
-
+	
 	// 몸통
 	CollisionDetectComponent->DrawDebugBodyLine(points[1], points[2], lineThickness);
 	CollisionDetectComponent->DrawDebugBodyLine(points[1], points[7], lineThickness);
@@ -115,6 +115,11 @@ void APlayerWall::DrawBody()
 	// 오른다리
 	CollisionDetectComponent->DrawDebugBodyLine(points[8], points[10], lineThickness);
 	CollisionDetectComponent->DrawDebugBodyLine(points[10], points[12], lineThickness);
+
+	for (int32 i = 0; i < points.Num(); i++)
+	{
+		DrawDebugCircle(GetWorld(), points[i], 10.0f, 32, FColor::Green, false, 0.0f, 0, 5.0f);
+	}
 }
 
 void APlayerWall::UpdateScore()

@@ -41,7 +41,7 @@ void AWallManager::BeginPlay()
 		
 	// 4. 각 벽들을 생성한다.
 	for (int i = 0; i < WallNum; ++i) {
-		ACollisionWall* Wall = GetWorld()->SpawnActor<ACollisionWall>(ACollisionWall::StaticClass());
+		ACollisionWall* Wall = GetWorld()->SpawnActor<ACollisionWall>(WallClass);
 		Wall->SetActorLocation(FVector(13080.0f, 0.0f, 440.0f));
 		Wall->SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 		Wall->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
@@ -70,4 +70,3 @@ void AWallManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-

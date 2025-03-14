@@ -20,36 +20,10 @@ void ACollisionWall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TargetLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	CollisionDetectComponent->WallWidth *= WidthScale;
+	CollisionDetectComponent->WallHeight *= HeightScale;
 
-	TWeakObjectPtr<ACollisionWall> WeakThis = this;
-	// PoseSampleRequest.Callback = [WeakThis](FHttpRequestPtr Req, FHttpResponsePtr Res, const bool IsSuccess)
-	// {
-	// 	if (!IsSuccess)
-	// 	{
-	// 		UE_LOG(LogTemp, Error, TEXT("Pose Sample Request Failed"));
-	// 		return;
-	// 	}
-	// 	
-	// 	if (WeakThis.IsValid())
-	// 	{
-	// 		const FString JsonString = Res->GetContentAsString();
-	// 		
-	// 		ACollisionWall* StrongThis = WeakThis.Get();
-	// 		if (StrongThis)
-	// 		{
-	// 			UE_LOG(LogTemp, Display, TEXT("FEAT: %s"), *JsonString);
-	// 			StrongThis->CollisionDetectComponent->SetPoseData(JsonString);
-	// 			StrongThis->CollisionDetectComponent->SaveBonePositionsByImageCoordinates();
-	// 			StrongThis->CollisionDetectComponent->SaveDetectionPoints();
-	// 			StrongThis->Synchronized = true;
-	// 			// TEST CODE
-	// 			StrongThis->SetMoveToTarget();
-	// 		}
-	// 	}
-	// };
-	// PoseSampleRequest.Path = "/pose/sample";
-	// FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
+	TargetLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 
 	// 목표 지점까지의 거리
 	const float Distance = FVector::Distance(TargetLocation, StartLocation);
