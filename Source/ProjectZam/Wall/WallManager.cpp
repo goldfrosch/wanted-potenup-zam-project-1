@@ -53,7 +53,7 @@ void AWallManager::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("SpawnRate: %f"), SpawnRate);
 	SpawnWalls();
 }
-
+	
 void AWallManager::SpawnWalls()
 {
 	if (CollisionWalls.IsValidIndex(0))
