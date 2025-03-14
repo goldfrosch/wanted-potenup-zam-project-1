@@ -125,49 +125,20 @@ void ACollisionWall::TryCollisionDetect()
 {
 	UCollisionDetectComponent* InCollisionDetectComponent = Cast<ABaseWall>(GetWorld()->GetFirstPlayerController()->GetPawn())->CollisionDetectComponent;
 	
-	FVector HeadPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->HeadPos));
-	FVector LeftShoulderPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftShoulderPos));
-	FVector RightShoulderPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightShoulderPos));
-	FVector LeftElbowPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftElbowPos));
-	FVector RightElbowPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightElbowPos));
-	FVector LeftHandPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftHandPos));
-	FVector RightHandPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightHandPos));
-	FVector LeftHipPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftHipPos));
-	FVector RightHipPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightHipPos));
-	FVector LeftKneePos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftKneePos));
-	FVector RightKneePos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightKneePos));
-	FVector LeftFootPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->LeftFootPos));
-	FVector RightFootPos = CollisionDetectComponent->UnNormalizePoint(CollisionDetectComponent->NormalizePoint(InCollisionDetectComponent->RightFootPos));
-
 	TArray<FVector> Points;
-	
-	Points.Add(HeadPos);
-	Points.Add(LeftShoulderPos);
-	Points.Add(RightShoulderPos);
-	Points.Add(LeftElbowPos);
-	Points.Add(RightElbowPos);
-	Points.Add(LeftHandPos);
-	Points.Add(RightHandPos);
-	Points.Add(LeftHipPos);
-	Points.Add(RightHipPos);
-	Points.Add(LeftKneePos);
-	Points.Add(RightKneePos);
-	Points.Add(LeftFootPos);
-	Points.Add(RightFootPos);
+
+	APlayerWall* PlayerWall = Cast<APlayerWall>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (PlayerWall)
+	{
+		Points = PlayerWall->points;
+	}
 
 	CollisionDetectComponent->ChangeNormalizedPointsToPoints();
-	
 	for (auto& Point : Points)
 	{
 		if (CollisionDetectComponent->CheckCollision(Point))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Collision Detected"));
 			bIsDetected = true;
-			break;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No Collision Detected"));
 		}
 	}
 

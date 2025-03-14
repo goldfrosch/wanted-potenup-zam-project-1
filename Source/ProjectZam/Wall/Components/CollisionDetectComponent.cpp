@@ -176,10 +176,11 @@ bool UCollisionDetectComponent::CheckCollision(const FVector& Point)
 	{
 		if (FVector2D::Distance({WallPoint.Y, WallPoint.Z}, {Point.Y, Point.Z}) <= CollisionRadius)
 		{
-			return false;
+			return true;
 		}
 	}
-	return true;
+	DrawDebugCircle(GetWorld(), Point, 10.0f, 32, FColor::Orange, false, 3.0f, 0, 5.0f);
+	return false;
 }
 
 void UCollisionDetectComponent::SetPoseData(const FString& InJsonString)
@@ -215,7 +216,7 @@ void UCollisionDetectComponent::DrawDebugHeadCircle(const FVector& Center, const
 			GetWorld(),
 			PrevPoint,
 			NextPoint,
-			FColor::Red,
+			FColor::White,
 			false,
 			-1.0f,
 			0,
@@ -228,7 +229,7 @@ void UCollisionDetectComponent::DrawDebugHeadCircle(const FVector& Center, const
 
 void UCollisionDetectComponent::DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness)
 {
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1, 0, LineThickness);
+	DrawDebugLine(GetWorld(), Start, End, FColor::White, false, -1, 0, LineThickness);
 }
 
 void UCollisionDetectComponent::SetPoseDataHard(const FPoseDataEntry& InPoseData)
