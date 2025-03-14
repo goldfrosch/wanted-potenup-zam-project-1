@@ -66,7 +66,7 @@ void ACollisionWall::Tick(float DeltaTime)
 		if (Alpha >= 1.0f)
 		{
 			// 정확히 타깃 위치로 이동 (스냅)
-			SetActorLocation(TargetLocation);
+			SetActorLocation({TargetLocation.X, StartLocation.Y, StartLocation.Z});
             
 			// 이동 완료 처리
 			bIsMoving = false;
@@ -78,7 +78,8 @@ void ACollisionWall::Tick(float DeltaTime)
 		{
 			// 4) 아직 완료 시간이 되지 않았다면, 
 			//    StartLocation ~ TargetLocation를 Alpha 비율만큼 선형보간
-			FVector NewLocation = FMath::Lerp(StartLocation, TargetLocation, Alpha);
+			float NewX = FMath::Lerp(StartLocation.X, TargetLocation.X, Alpha);
+			FVector NewLocation = FVector(NewX, StartLocation.Y, StartLocation.Z);
 			SetActorLocation(NewLocation);
 		}
 	}

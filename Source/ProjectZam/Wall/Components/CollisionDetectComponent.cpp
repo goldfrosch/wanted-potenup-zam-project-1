@@ -17,9 +17,13 @@ void UCollisionDetectComponent::BeginPlay()
 	Super::BeginPlay();
 	
 	LineLengths.Add(0.0f);
+	LineLengths.Add(0.1f);
 	LineLengths.Add(0.25f);
+	LineLengths.Add(0.35f);
 	LineLengths.Add(0.5f);
+	LineLengths.Add(0.6f);
 	LineLengths.Add(0.75f);
+	LineLengths.Add(0.8f);
 	LineLengths.Add(1.0f);
 }
 
