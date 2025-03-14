@@ -61,19 +61,17 @@ public:
 	void DrawDebugBodyLine(const FVector& Start, const FVector& End, const float LineThickness);
 	void SetPoseDataHard(const FPoseDataEntry& InPoseData);
 
-private:
-	
-	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Pose")
 	float Width = 640.0f;
-	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Pose")
 	float Height = 480.0f;
 
 	// Wall의 크기에 따라 조절되어야 함
-	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Pose")
 	float WallWidth = Width;
-	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "Pose")
 	float WallHeight = Height;
-	
+private:
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	FPoseDataEntry PoseData;
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
@@ -81,10 +79,9 @@ private:
 
 	TArray<FVector2D> NormalizedPoints;
 	TArray<FVector> Points;
-
 	
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
 	TArray<float> LineLengths;
 	UPROPERTY(EditAnywhere, Category = "Pose", meta = (AllowPrivateAccess = "true"))
-	float CollisionRadius = 5.0f;
+	float CollisionRadius = 50.0f;
 };

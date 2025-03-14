@@ -42,4 +42,7 @@ public:
 	int32 Index = 0;
 
 	std::vector<int32> Indices;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
+	TSubclassOf<class ACollisionWall> WallClass;
 };
