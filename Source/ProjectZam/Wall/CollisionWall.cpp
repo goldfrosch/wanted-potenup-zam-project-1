@@ -5,6 +5,7 @@
 
 #include "Components/CollisionDetectComponent.h"
 #include "Interfaces/IHttpResponse.h"
+#include "ProjectZam/PlayerWall.h"
 
 
 // Sets default values
@@ -49,7 +50,7 @@ void ACollisionWall::BeginPlay()
 	};
 	PoseSampleRequest.Path = "/pose/sample";
 
-	FAPIUtil::GetMainAPI()->GetApi(PoseSampleRequest, PoseSampleResponse);
+	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 
 
 	// 목표 지점까지의 거리
@@ -121,6 +122,16 @@ void ACollisionWall::SetMoveToTarget()
 	bIsMoving = true;
 }
 
+void ACollisionWall::AddScore()
+{
+	if (bAddedScore) return;
+	auto* Target = Cast<APlayerWall>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (Target)
+	{
+		Target->UpdateScore();
+	}
+}
+
 void ACollisionWall::TryCollisionDetect()
 {
 	UCollisionDetectComponent* InCollisionDetectComponent = Cast<ABaseWall>(GetWorld()->GetFirstPlayerController()->GetPawn())->CollisionDetectComponent;
@@ -162,6 +173,7 @@ void ACollisionWall::TryCollisionDetect()
 		if (CollisionDetectComponent->CheckCollision(Point))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Collision Detected"));
+			bIsDetected = true;
 			break;
 		}
 		else
@@ -169,5 +181,13 @@ void ACollisionWall::TryCollisionDetect()
 			UE_LOG(LogTemp, Warning, TEXT("No Collision Detected"));
 		}
 	}
+
+	if (bIsDetected == false)
+	{
+		AddScore();
+		bAddedScore = true;
+	}
+
+	Destroy();
 }
 

@@ -3,6 +3,8 @@
 
 #include "PlayerWall.h"
 
+#include "ScoreUI.h"
+#include "Blueprint/UserWidget.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Wall/Components/CollisionDetectComponent.h"
 
@@ -19,6 +21,12 @@ void APlayerWall::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ScoreUI = Cast<UScoreUI>(CreateWidget(GetWorld(), ScoreUIFactory));
+	if (ScoreUI)
+	{
+		ScoreUI->AddToViewport();
+	}
+	
 	for (int32 i = 0 ; i < 13; i++)
 	{
 		normalizedPoints.Add(FVector2d::Zero());
@@ -44,7 +52,7 @@ void APlayerWall::Tick(float DeltaTime)
 		}
 	};
 	PoseSampleRequest.Path = "/pose/sample";
-	FAPIUtil::GetMainAPI()->GetApiV2(this, PoseSampleRequest, PoseSampleResponse);
+	FAPIUtil::GetMainAPI()->GetApi(this, PoseSampleRequest, PoseSampleResponse);
 	DrawBody();
 }
 
@@ -107,5 +115,11 @@ void APlayerWall::DrawBody()
 	// 오른다리
 	CollisionDetectComponent->DrawDebugBodyLine(points[8], points[10], lineThickness);
 	CollisionDetectComponent->DrawDebugBodyLine(points[10], points[12], lineThickness);
+}
+
+void APlayerWall::UpdateScore()
+{
+	score++;
+	ScoreUI->UpdateScore(score);
 }
 

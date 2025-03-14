@@ -24,7 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void SetMoveToTarget();
-
+	void AddScore();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	float MovementDuration = 3.0f;
@@ -39,6 +39,9 @@ private:
 	FApiRequest PoseSampleRequest;
 	FApiResponse PoseSampleResponse;
 	bool Synchronized = false;
+
+	bool bIsDetected = false;
+	bool bAddedScore = false;
 	float Speed = 0.0f;
 	float StartTime = 0.0f; 
 };
