@@ -6,6 +6,7 @@
 #include "ScoreUI.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/AudioComponent.h"
+#include "Games/MainPlayerController.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Wall/Components/CollisionDetectComponent.h"
 
@@ -23,20 +24,6 @@ APlayerWall::APlayerWall()
 void APlayerWall::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ScoreUI = Cast<UScoreUI>(CreateWidget(GetWorld(), ScoreUIFactory));
-	if (ScoreUI)
-	{
-		ScoreUI->AddToViewport();
-	}
-
-	LevelChangeUI = CreateWidget(GetWorld(), LevelChangeUIFactory);
-	if (LevelChangeUI)
-	{
-		LevelChangeUI->AddToViewport();
-		LevelChangeUI->SetVisibility(ESlateVisibility::Hidden);
-	}
-	
 	
 	for (int32 i = 0 ; i < 13; i++)
 	{
@@ -130,8 +117,11 @@ void APlayerWall::DrawBody()
 
 void APlayerWall::UpdateScore()
 {
-	score++;
-	ScoreUI->UpdateScore(score);
+	Score += 1;
+	if (AMainPlayerController* PC = Cast<AMainPlayerController>(GetController()))
+	{
+		PC->ScoreUI->UpdateScore(Score);
+	}
 }
 
 void APlayerWall::SetPlaySound(class USoundWave* sound)
